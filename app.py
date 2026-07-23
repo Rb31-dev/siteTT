@@ -1,9 +1,14 @@
 import streamlit as st
 
-# 1. Configuração da página
-st.set_page_config(page_title="Sneaker Vault", page_icon="👟", layout="wide")
+# 1. Configuração da página (Inicia com a barra lateral recolhida para o cabeçalho ocupar a tela toda)
+st.set_page_config(
+    page_title="Sneaker Vault", 
+    page_icon="👟", 
+    layout="wide", 
+    initial_sidebar_state="collapsed"
+)
 
-# 2. Injeção de CSS e HTML customizado para o Cabeçalho
+# 2. Injeção de CSS e HTML customizado
 st.markdown("""
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -13,13 +18,22 @@ st.markdown("""
     background-color: #FAFAFA !important;
 }
 
-/* Barra Lateral Clara */
+/* Customização da Barra Lateral e do Botão de Abrir/Fechar (Seta) */
 [data-testid="stSidebar"] {
     background-color: #F0F0F0 !important;
     border-right: 2px solid #111111 !important;
 }
 
-/* Textos padrão do site */
+/* Estiliza o botão nativo de recolher/abrir a sidebar para se destacar com a seta */
+[data-testid="stSidebarCollapseButton"], [data-testid="collapsedControl"] {
+    color: #4169E1 !important;
+    background-color: #FFFFFF !important;
+    border: 2px solid #111111 !important;
+    border-radius: 6px !important;
+    box-shadow: 2px 2px 0px #111111 !important;
+}
+
+/* Textos padrão */
 h1, h2, h3, h4, h5, h6, label, p, span {
     color: #111111 !important;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -31,7 +45,7 @@ h1, h2, h3, h4, h5, h6, label, p, span {
     font-weight: 600;
 }
 
-/* Cards e Caixas na Sidebar e Vitrine */
+/* Cards na Sidebar e Vitrine */
 div[data-testid="stVerticalBlockBorderWrapper"] {
     border-radius: 6px !important;
     border: 2px solid #111111 !important;
@@ -41,7 +55,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     margin-bottom: 15px;
 }
 
-/* Estilo dos Botões */
+/* Botões */
 div.stButton > button {
     background-color: #4169E1 !important; /* Azul Royal */
     border: 2px solid #111111 !important;
@@ -51,31 +65,29 @@ div.stButton > button {
     transition: all 0.1s ease !important;
 }
 
-/* Texto interno dos Botões */
 div.stButton > button p, 
 div.stButton > button span, 
 div.stButton > button div {
     color: #FFFFFF !important;
     font-weight: 700 !important;
     font-size: 0.9em !important;
-    letter-spacing: 0.5px !important;
 }
 
-/* Hover dos Botões */
 div.stButton > button:hover {
     background-color: #111111 !important;
     box-shadow: 4px 4px 0px #4169E1 !important;
 }
 
-/* ESTILOS DO CABEÇALHO AZUL ROYAL E HOVER */
+/* CABEÇALHO AZUL ROYAL */
 .header-container {
-    background-color: #4169E1; /* Azul Royal */
+    background-color: #4169E1;
     color: white;
     padding: 12px 20px;
     border-radius: 6px;
     border: 2px solid #111111;
     box-shadow: 4px 4px 0px #111111;
     margin-bottom: 25px;
+    width: 100%;
 }
 
 .top-bar {
@@ -86,7 +98,6 @@ div.stButton > button:hover {
     font-weight: 600;
 }
 
-/* Animação do Texto Rotativo no Topo */
 .ticker-wrapper {
     height: 22px;
     overflow: hidden;
@@ -119,7 +130,6 @@ div.stButton > button:hover {
     cursor: pointer;
 }
 
-/* Sub-menu interno que abre suavemente no hover */
 .hover-menu {
     max-height: 0;
     opacity: 0;
@@ -161,7 +171,6 @@ div.stButton > button:hover {
     color: #FFD700 !important;
 }
 
-/* Barra de utilidades abaixo do cabeçalho */
 .action-bar {
     display: flex;
     justify-content: flex-end;
@@ -222,7 +231,7 @@ div.stButton > button:hover {
 </div>
 """, unsafe_allow_html=True)
 
-# 3. BARRA DE AÇÕES (BUSCA DA LOJA & BOTÕES DIREITA)
+# 3. BARRA DE AÇÕES (PROCURAR + OPÇÕES DIREITA)
 col_search, col_actions = st.columns([2, 2])
 
 with col_search:
@@ -239,7 +248,7 @@ with col_actions:
 
 st.write("")
 
-# 4. ESTADO DA APLICAÇÃO (Carrinho e Produtos)
+# 4. ESTADO DA APLICAÇÃO
 if "carrinho" not in st.session_state:
     st.session_state.carrinho = []
 
@@ -286,7 +295,7 @@ def resetar_produtos():
 if "produtos" not in st.session_state:
     resetar_produtos()
 
-# --- SIDEBAR (BARRA LATERAL) ---
+# --- SIDEBAR (ABRÍVEL COM A SETA) ---
 with st.sidebar:
     st.title("🛒 SEU CARRINHO")
     
@@ -381,7 +390,7 @@ with st.expander("➕ Adicionar Novo Tênis ao Catálogo"):
 
 st.write("---")
 
-# --- LÓGICA DE FILTRAGEM ---
+# --- FILTRAGEM ---
 produtos_filtrados = st.session_state.produtos
 
 if f_marca != "Todas":
